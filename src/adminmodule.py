@@ -51,6 +51,12 @@ def setup_admin(file_path):
     ]
     save_admins_into_file(file_path, admins_data)
 
+def show_averge_book_borrowed(borrwers):
+    total_borrowed=0
+    for bor in borrwers:
+        total_borrowed+=bor.get_borrowed_books_number()
+    
+    print(f'Books Borrwed Average={total_borrowed//len(borrwers)}')
 
 if __name__ == '__main__':
     """_summary_
@@ -63,6 +69,7 @@ if __name__ == '__main__':
     while (True):
         print(f'Hi {read_data.get_name()} You can perform the following operations')
         print('Press 1 to Add new Book to Library')
+        print('Press 2 to Show all Books in Library')
         print('Press 2 to Show all Books in Library')
         print('Press q to Exit')
         choice = input()
