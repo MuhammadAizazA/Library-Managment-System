@@ -86,6 +86,7 @@ if __name__=='__main__':
                 print('Press 2 to return book to Library')
                 print('Press 3 to Show all Books in Library')
                 print('Press 4 to Save all Books to file')
+                print('Press 5 to see all borrowed Books')
                 print('Press q to Exit')
                 browwer_choice = input('Your Choice: ')
                 if browwer_choice == '1':
@@ -122,6 +123,8 @@ if __name__=='__main__':
                     bookmodule.save_all_to_file(
                         non_fiction_objects, 'Data/nonfictionbooks.csv')
                     borrowermodule.save_borrowers_to_file(borrwoers_objects)
+                elif browwer_choice == '5':
+                    print(f'''Borrowed Books ISBN's:{logged_in_user.get_borrowed_isbns()}''')
                 elif browwer_choice == 'q':
                     break
         elif interface_choice=='q':
