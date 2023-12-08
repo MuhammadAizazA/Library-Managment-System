@@ -13,9 +13,13 @@ pattern = r'(97[89]-\d{1,5}-\d{1,7}-\d{1,6}-\d{1})'
 
 if __name__=='__main__':
     while True:
+        print('----------------------------------------------------')
         # This menu will be contine until user has quit. From this loop Librarian and browwer can be accessed
-        interface_choice=input('Continue as\nType LIB for Librarian\nType BRWR for Borrower\nType q to quit\n')
+        print('Continue as\nType LIB for Librarian\nType BRWR for Borrower\nType q to quit')
+        print('----------------------------------------------------')
+        interface_choice=input()
         # This condition will start the user as librarian
+        
         if interface_choice=='LIB':
             # Generating a default admin
             file_path = 'Data/admins.csv'
@@ -23,12 +27,14 @@ if __name__=='__main__':
             read_data = adminmodule.load_admin_into_objects(file_path)
             # Menu for showing Librarian Interface
             while (True):
+                print('----------------------------------------------------')
                 print(f'Hi {read_data.get_name()} You can perform the following operations')
                 print('Press 1 to Add new Book to Library')
                 print('Press 2 to Show all Books in Library')
                 print('Press 3 to Show all borrowers in Library')
                 print('Press 4 to Show average number Books borrowed')
                 print('Press q to Exit')
+                print('----------------------------------------------------')
                 choice = input()
                 # Choice 1 will add new book to objects
                 if choice == '1':
