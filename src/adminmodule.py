@@ -15,8 +15,6 @@ class Librarian:
 
     def get_name(self):
         return self.name
-        
-
 
 def load_admin_into_objects(file_path) -> Librarian:
     with open(file_path, 'r') as csv_file:

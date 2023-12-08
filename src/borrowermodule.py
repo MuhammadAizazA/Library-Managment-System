@@ -1,6 +1,14 @@
 import csv
 import bookmodule
+import logging
 
+logger = logging.getLogger(__name__)
+logger.setLevel(logging.DEBUG)
+f_handler = logging.FileHandler('Data/books.log')
+f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+f_handler.setFormatter(f_format)
+logger.addHandler(f_handler)
+        
 class Borrower:
     def __init__(self, name, address, email, password, borrowed_books_number, borrowed_isbns):
         self.name = name
@@ -47,10 +55,18 @@ class Borrower:
             if applied_isbn == book.get_isbn():
                 try:
                     if book.check_avalibility_book():
+                        book_logger_borrowed = logging.getLogger('book_logger')
+                        book_logger_borrowed.setLevel(logging.DEBUG)
+
+                        f_handler = logging.FileHandler('Data/books_borrowed.log')
+                        f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                        f_handler.setFormatter(f_format)
+                        book_logger_borrowed.addHandler(f_handler)
                         book.decrement_quantity()
                         self.increment_borrowed_books_number()
                         self.borrowed_isbns.append(book.get_isbn())
                         print(self.borrowed_isbns)
+                        book_logger_borrowed.debug(f'Book ISBN: {applied_isbn} Borrowed Successfully')
                 except Exception as e:
                     print('Book Out of Stock!', e)
 
@@ -60,11 +76,19 @@ class Borrower:
                 try:
                     # Check if the borrower has borrowed this book
                     if returned_isbn in self.borrowed_isbns:
+                        book_logger_return = logging.getLogger('book_logger')
+                        book_logger_return.setLevel(logging.DEBUG)
+
+                        f_handler = logging.FileHandler('Data/books_return.log')
+                        f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
+                        f_handler.setFormatter(f_format)
+                        book_logger_return.addHandler(f_handler)
                         book.increment_quantity()
                         self.decrement_borrowed_books_number()
                         self.borrowed_isbns.remove(returned_isbn)
                         print(f'Returned book with ISBN {returned_isbn}')
                         print(f'Updated borrowed ISBNs: {self.borrowed_isbns}')
+                        book_logger_return.info(f'Book ISBN: {returned_isbn} Returned Successfully')
                     else:
                         print('You have not borrowed this book.')
                 except Exception as e:
@@ -88,9 +112,6 @@ def load_borrower_into_list_objects() -> list:
 
     return borrower_objects
 
-# def average_book_borrowed():
-
-
 def login(borrowers_objects):
     while True:
         try:
@@ -102,8 +123,6 @@ def login(borrowers_objects):
                     print(f'Login successful for {borrower.get_name()}')
                     return borrower
 
-            print(f'Login successful for {borrower.get_name()}')
-            return borrower
         except StopIteration:
             print('Invalid email or password. Please try again.')
 
@@ -118,61 +137,5 @@ def save_borrowers_to_file(borrower_objects):
 
 if __name__ == '__main__':
     borrwoers_objects = load_borrower_into_list_objects()
-    path_fic = 'Data/fictionbooks.csv'
-    path_nonfic = 'Data/nonfictionbooks.csv'
-    fiction_dict = bookmodule.load_books_into_list_objects(path_fic)
-    nonfiction_dict = bookmodule.load_books_into_list_objects(path_nonfic)
-    fiction_objects = bookmodule.create_books_objects(
-        fiction_dict, bookmodule.FictionBook)
-    non_fiction_objects = bookmodule.create_books_objects(
-        nonfiction_dict, bookmodule.NonFictionBook)
-
-    logged_in_user = login(borrwoers_objects)
-    while True:
-        print(
-            f'Hi {logged_in_user.get_name()} You can perform the following operations')
-        print('Press 1 to borrow Book from Library')
-        print('Press 2 to return book to Library')
-        print('Press 3 to Show all Books in Library')
-        print('Press 4 to Save all Books to file')
-        print('Press q to Exit')
-        browwer_choice = input('Your Choice: ')
-        if browwer_choice == '1':
-            requested_isbn = input('Enter the ISBN you want to Borrow: ')
-            genre_book = input(
-                f'Select Genre {1} for Fiction and {2} for Non Fiction: ')
-
-            # Iterate over both fiction and non-fiction books
-            for book_set in [fiction_objects, non_fiction_objects]:
-                for book in book_set:
-                    if requested_isbn == book.get_isbn():
-                        logged_in_user.borrow_book(requested_isbn, book_set)
-                        break
-                else:
-                    continue 
-                break
-            else:
-                print('Book not found. Please check the ISBN and try again.')
-        elif browwer_choice == '2':
-            returned_isbn = input('Enter the ISBN you want to Return: ')
-            # Iterate over both fiction and non-fiction books
-            for book_set in [fiction_objects, non_fiction_objects]:
-                for book in book_set:
-                    if returned_isbn == book.get_isbn():
-                        logged_in_user.return_book(returned_isbn, book_set)
-                        break
-                else:
-                    continue  # Only executed if the inner loop did NOT break
-                break  # Only executed if the inner loop DID break (book found)
-            else:
-                print('Book not found. Please check the ISBN and try again.')
-        elif browwer_choice == '3':
-            bookmodule.show_all_books()
-        elif browwer_choice == '4':
-            bookmodule.save_all_to_file(
-                fiction_objects, 'Data/fictionbooks.csv')
-            bookmodule.save_all_to_file(
-                non_fiction_objects, 'Data/nonfictionbooks.csv')
-            save_borrowers_to_file(borrwoers_objects)
-        elif browwer_choice == 'q':
-            break
+    for _ in borrwoers_objects:
+        print(_)

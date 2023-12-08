@@ -1,3 +1,10 @@
+"""_summary_
+
+    Returns:
+        Main File : This File is the Library where Admin and Borrower can do the required Operations
+        
+"""
+import logging
 import adminmodule
 import borrowermodule
 import bookmodule
@@ -5,7 +12,7 @@ import re
 
 pattern = r'(97[89]-\d{1,5}-\d{1,7}-\d{1,6}-\d{1})'
 
-if __name__=='__main__':
+if __name__=='__main__':  
     while True:
         interface_choice=input('Continue as\nType LIB for Librarian\nType BRWR for Borrower\nType q to quit\n')
         if interface_choice=='LIB':
@@ -28,13 +35,14 @@ if __name__=='__main__':
                     author = input('Enter the book Author: ')
                     while True:
                         isbn = input('Enter the book ISBN(13 digits): ')
-                        if len(isbn)==17 or len(isbn)==10 or len(isbn)==9:
+                        if len(isbn)==17:
                             if re.fullmatch(pattern, isbn):
                                 print('Correct pattern')
                                 break
                             else:
                                 print('Incorrect pattern. Please enter a valid (13 or 10 or 9)-digit ISBN.')
-
+                        else:
+                            print('Error: Lenght should be 13 with 4 (-) ie: 978-123-123-123-2')
 
                     num_of_copies = input('Enter the book Quantity: ')
 
@@ -58,8 +66,7 @@ if __name__=='__main__':
                     adminmodule.show_averge_book_borrowed(borrowers_)
                 elif choice == 'q':
                     break
-        
-                
+
         elif interface_choice=='BRWR':
             borrwoers_objects = borrowermodule.load_borrower_into_list_objects()
             path_fic = 'Data/fictionbooks.csv'
