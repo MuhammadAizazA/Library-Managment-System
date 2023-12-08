@@ -92,6 +92,7 @@ if __name__=='__main__':
 
             logged_in_user = borrowermodule.login(borrwoers_objects)
             while True:
+                print('----------------------------------------------------')
                 print(
                     f'Hi {logged_in_user.get_name()} You can perform the following operations')
                 print('Press 1 to borrow Book from Library')
@@ -100,6 +101,7 @@ if __name__=='__main__':
                 print('Press 4 to Save all Books to file')
                 print('Press 5 to see all borrowed Books')
                 print('Press q to Exit')
+                print('----------------------------------------------------')
                 browwer_choice = input('Your Choice: ')
                 # user can borrow with option 1 and they will need to provide valid ISBN here i am checking the isbn validity but matching with valid isbns
                 if browwer_choice == '1':
