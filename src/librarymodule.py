@@ -12,12 +12,13 @@ import re
 pattern = r'(97[89]-\d{1,5}-\d{1,7}-\d{1,6}-\d{1})'
 
 if __name__=='__main__':
-    while True:
+    print('--------------------------Welcome To Library Managment System--------------------------')
+    while True:    
         print('----------------------------------------------------')
         # This menu will be contine until user has quit. From this loop Librarian and browwer can be accessed
         print('Continue as\nType LIB for Librarian\nType BRWR for Borrower\nType q to quit')
         print('----------------------------------------------------')
-        interface_choice=input()
+        interface_choice=input().upper()
         # This condition will start the user as librarian
         
         if interface_choice=='LIB':
@@ -139,6 +140,6 @@ if __name__=='__main__':
                     print(f'''Borrowed Books ISBN's:{logged_in_user.get_borrowed_isbns()}''')
                 elif browwer_choice == 'q':
                     break
-        elif interface_choice=='q':
+        elif interface_choice=='Q':
             print('Program Ended Successfully!')
             quit()

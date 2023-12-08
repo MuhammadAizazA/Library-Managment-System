@@ -26,11 +26,5 @@ This repository contains the source code for Library Managment System. To get st
 Now that the dependencies are installed and the virtual environment is set up, you can run the code from the `src` directory. To do this, execute the following command:
 
 ```
-python src/file_name.py
-```
-
-Additionally, you can test the code by running the tests located in the `test` directory:
-
-```
-python test/test_number.py
+python src/librarymodule.py
 ```
