@@ -1,8 +1,8 @@
 import csv
-import bookmodule
-import re
 
 class Librarian:
+    """_summary_
+    """
     def __init__(self, name, email, password):
         self.name = name
         self.email = email
@@ -37,7 +37,6 @@ def save_admins_into_file(file_path, data):
             writer.writeheader()
 
         writer.writerows(data)
-
 
 def setup_admin(file_path):
     admins_data = [

@@ -1,14 +1,23 @@
 import csv
-import bookmodule
-import logging
+import os
+import logging.config
 
-logger = logging.getLogger(__name__)
-logger.setLevel(logging.DEBUG)
-f_handler = logging.FileHandler('Data/books.log')
-f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-f_handler.setFormatter(f_format)
-logger.addHandler(f_handler)
-        
+import yaml
+
+def setup_logging(default_path='logs/logging.yaml',default_level=logging.INFO,env_key='LOG_CFG'):
+    """Setup logging configuration
+    """
+    path = default_path
+    value = os.getenv(env_key, None)
+    if value:
+        path = value
+    if os.path.exists(path):
+        with open(path, 'rt') as f:
+            config = yaml.safe_load(f.read())
+        logging.config.dictConfig(config)
+    else:
+        logging.basicConfig(level=default_level)
+
 class Borrower:
     def __init__(self, name, address, email, password, borrowed_books_number, borrowed_isbns):
         self.name = name
@@ -55,18 +64,12 @@ class Borrower:
             if applied_isbn == book.get_isbn():
                 try:
                     if book.check_avalibility_book():
-                        book_logger_borrowed = logging.getLogger('book_logger')
-                        book_logger_borrowed.setLevel(logging.DEBUG)
-
-                        f_handler = logging.FileHandler('Data/books_borrowed.log')
-                        f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-                        f_handler.setFormatter(f_format)
-                        book_logger_borrowed.addHandler(f_handler)
+                        setup_logging()
                         book.decrement_quantity()
                         self.increment_borrowed_books_number()
                         self.borrowed_isbns.append(book.get_isbn())
                         print(self.borrowed_isbns)
-                        book_logger_borrowed.debug(f'Book ISBN: {applied_isbn} Borrowed Successfully')
+                        logging.info(f'Book ISBN: {applied_isbn} Borrowed Successfully')
                 except Exception as e:
                     print('Book Out of Stock!', e)
 
@@ -76,24 +79,17 @@ class Borrower:
                 try:
                     # Check if the borrower has borrowed this book
                     if returned_isbn in self.borrowed_isbns:
-                        book_logger_return = logging.getLogger('book_logger')
-                        book_logger_return.setLevel(logging.DEBUG)
-
-                        f_handler = logging.FileHandler('Data/books_return.log')
-                        f_format = logging.Formatter('%(asctime)s - %(name)s - %(levelname)s - %(message)s')
-                        f_handler.setFormatter(f_format)
-                        book_logger_return.addHandler(f_handler)
+                        setup_logging()
                         book.increment_quantity()
                         self.decrement_borrowed_books_number()
                         self.borrowed_isbns.remove(returned_isbn)
                         print(f'Returned book with ISBN {returned_isbn}')
                         print(f'Updated borrowed ISBNs: {self.borrowed_isbns}')
-                        book_logger_return.info(f'Book ISBN: {returned_isbn} Returned Successfully')
+                        logging.info(f'Book ISBN: {returned_isbn} Returned Successfully')
                     else:
                         print('You have not borrowed this book.')
                 except Exception as e:
                     print(f'Error returning book: {e}')
-
 
 def load_borrower_into_list_objects() -> list:
     borrower_dictionary = {}

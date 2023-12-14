@@ -2,7 +2,6 @@ from subprocess import run, CalledProcessError, PIPE
 import shlex
 from sys import executable, exit
 
-    
 # Check if a given tool is installed by running its '--version' command.
 def is_tool_installed(tool):
     try:

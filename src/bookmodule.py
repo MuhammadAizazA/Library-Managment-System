@@ -1,5 +1,5 @@
 import csv
-import threading
+import concurrent.futures
 
 
 def decorator(func):
@@ -175,17 +175,21 @@ def show_all_books():
     """_summary_
     This function just read all the data by calling two functions and then print all the data
     """
-    fic_objs = load_books_into_list_objects('Data/fictionbooks.csv')
-    non_fic_objs = load_books_into_list_objects('Data/nonfictionbooks.csv')
-
-    objs_fic = create_books_objects(fic_objs, FictionBook)
-    objs_non_fic = create_books_objects(non_fic_objs, NonFictionBook)
-
-    for _ in objs_fic:
-        print(_)
-
-    for _ in objs_non_fic:
-        print(_)
+    with concurrent.futures.ThreadPoolExecutor(max_workers=2) as executor:
+        file_paths=['Data/fictionbooks.csv','Data/nonfictionbooks.csv']
+        future = [executor.submit(load_books_into_list_objects, file_path) for file_path in file_paths]
+    dict_list=[]
+    
+    for item in future:
+        dict_list.append(item.result())
+            
+    
+    objs_fic = create_books_objects(dict_list[0], FictionBook)
+    objs_non_fic = create_books_objects(dict_list[1], NonFictionBook)    
+    
+    for dict_set in [objs_fic, objs_non_fic]:
+        for book in dict_set:
+            print(book)
 
 
 def save_all_to_file(books, file_path):
@@ -198,10 +202,7 @@ def save_all_to_file(books, file_path):
     """
     with open(file_path, 'w', newline='') as file:
         writer = csv.writer(file)
-        # Use a set to keep track of unique ISBNs
         unique_isbns = set()
-
-        # Write data from all objects, avoiding duplicate ISBNs
         for book in books:
             if book.get_isbn() not in unique_isbns:
                 data_to_append = {
@@ -209,11 +210,10 @@ def save_all_to_file(books, file_path):
                     'author': book.auther,
                     'isbn': book.isbn,
                     'quantity_available': book.quantity_avalible,
-                    'genre': book.genre  # Assuming genre is an attribute of some books
+                    'genre': book.genre
                 }
                 writer.writerow(data_to_append.values())
                 unique_isbns.add(book.isbn)
-
 
 if __name__ == '__main__':
     # if this script is executed then all books in files will be displayed
